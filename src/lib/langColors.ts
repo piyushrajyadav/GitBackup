@@ -1,0 +1,42 @@
+export const langColors: Record<string, string> = {
+  JavaScript: "#F7DF1E",
+  TypeScript: "#3178C6",
+  Python: "#3572A5",
+  Go: "#00ADD8",
+  Rust: "#DEA584",
+  Java: "#B07219",
+  "C++": "#F34B7D",
+  C: "#555555",
+  "C#": "#239120",
+  Ruby: "#701516",
+  PHP: "#4F5D95",
+  Swift: "#F05138",
+  Kotlin: "#A97BFF",
+  Dart: "#00B4AB",
+  Scala: "#DC322F",
+  Shell: "#89E051",
+  Lua: "#000080",
+  R: "#198CE7",
+  Haskell: "#5E5086",
+  Elixir: "#6E4A7E",
+  Clojure: "#DB5855",
+  Vim_Script: "#199F4B",
+  HTML: "#E34C26",
+  CSS: "#563D7C",
+  SCSS: "#C6538C",
+  Vue: "#41B883",
+  Svelte: "#FF3E00",
+  Jupyter_Notebook: "#DA5B0B",
+  Dockerfile: "#384D54",
+  Makefile: "#427819",
+  HCL: "#844FBA",
+  Nix: "#7E7EFF",
+  Zig: "#EC915C",
+  OCaml: "#3BE133",
+  Erlang: "#B83998",
+};
+
+export function getLangColor(lang: string | null): string {
+  if (!lang) return "rgba(255,255,255,0.15)";
+  return langColors[lang] || "rgba(255,255,255,0.15)";
+}
