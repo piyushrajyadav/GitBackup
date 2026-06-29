@@ -125,10 +125,11 @@ export async function fetchAllRepos(
   return repos;
 }
 
-export async function downloadRepoZip(
+// New approach: Download repo as tarball instead of zipball (better CORS support)
+export async function downloadRepoArchive(
   repo: GitHubRepo,
   token: string | null
-): Promise<ArrayBuffer> {
+): Promise<Blob> {
   const headers: HeadersInit = {
     Accept: "application/vnd.github.v3+json",
   };
@@ -136,12 +137,42 @@ export async function downloadRepoZip(
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const url = `https://api.github.com/repos/${repo.full_name}/zipball/${repo.default_branch}`;
-  const res = await fetch(url, { headers });
+  // Use tarball endpoint which has better CORS support
+  const url = `https://api.github.com/repos/${repo.full_name}/tarball/${repo.default_branch}`;
+  
+  const res = await fetch(url, { 
+    headers,
+    redirect: 'follow'
+  });
 
   if (!res.ok) {
     throw new Error(`Failed to download ${repo.name}: ${res.status}`);
   }
 
-  return res.arrayBuffer();
+  return res.blob();
+}
+
+// Fallback: Create a simple metadata file for repos that fail to download
+export function createRepoMetadata(repo: GitHubRepo): string {
+  return `# ${repo.name}
+
+**Repository**: ${repo.html_url}
+**Description**: ${repo.description || "No description"}
+**Language**: ${repo.language || "Unknown"}
+**Stars**: ${repo.stargazers_count}
+**Last Updated**: ${new Date(repo.updated_at).toLocaleDateString()}
+**Default Branch**: ${repo.default_branch}
+
+## Download Instructions
+
+This repository could not be downloaded automatically.
+You can clone it manually using:
+
+\`\`\`bash
+git clone ${repo.html_url}.git
+\`\`\`
+
+Or download the ZIP directly from:
+${repo.html_url}/archive/refs/heads/${repo.default_branch}.zip
+`;
 }

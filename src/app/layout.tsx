@@ -39,11 +39,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geist.variable} ${jetbrains.variable} h-full`}
-    >
-      <body>{children}</body>
+    <html lang="en" className={`${geist.variable} ${jetbrains.variable}`}>
+      <body className="font-[var(--font-geist-sans)]">{children}</body>
     </html>
   );
 }
